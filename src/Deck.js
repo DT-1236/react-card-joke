@@ -29,11 +29,16 @@ class Deck extends Component {
     };
     this.draw = this.draw.bind(this);
     this.renderCard = this.renderCard.bind(this);
+    this.getNewDeck = this.getNewDeck.bind(this);
+  }
+
+  async getNewDeck() {
+    const response = await axios.get(newDeckURI);
+    this.setState({ deckId: response.data.deck_id, cards: [] });
   }
 
   async componentDidMount() {
-    const response = await axios.get(newDeckURI);
-    this.setState({ deckId: response.data.deck_id });
+    this.getNewDeck();
   }
 
   async draw() {
@@ -62,7 +67,12 @@ class Deck extends Component {
   render() {
     return (
       <StyledDeck className="Deck">
-        <StyledButton onClick={this.draw}>Get a new Card!</StyledButton>
+        {this.state.cards.length === 52 ? (
+          <StyledButton onClick={this.getNewDeck}>New Deck?</StyledButton>
+        ) : (
+          <StyledButton onClick={this.draw}>Get a new Card!</StyledButton>
+        )}
+
         {this.state.deckId ? this.state.cards : 'Loading...'}
       </StyledDeck>
     );
