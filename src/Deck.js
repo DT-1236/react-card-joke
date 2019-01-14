@@ -11,7 +11,7 @@ const StyledDeck = styled.div`
 
 const StyledButton = styled.button`
   display: relative;
-  margin-top: 10%;
+  margin-top: 5%;
 `;
 
 const newDeckURI =
@@ -37,10 +37,12 @@ class Deck extends Component {
   }
 
   async draw() {
-    const response = await axios.get(drawCardURI(this.state.deckId));
-    const cards = [...this.state.cards];
-    cards.push(this.renderCard(response.data.cards[0]));
-    this.setState({ cards });
+    if (this.state.cards.length < 52) {
+      const response = await axios.get(drawCardURI(this.state.deckId));
+      const cards = [...this.state.cards];
+      cards.push(this.renderCard(response.data.cards[0]));
+      this.setState({ cards });
+    }
   }
 
   renderCard(card) {
@@ -51,6 +53,8 @@ class Deck extends Component {
         value={card.value}
         key={card.code}
         angle={Math.floor((Math.random() - 0.5) * 90)}
+        xshift={Math.floor((Math.random() - 0.5) * 20)}
+        yshift={Math.floor((Math.random() - 0.5) * 20)}
       />
     );
   }
